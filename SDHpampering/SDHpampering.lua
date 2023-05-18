@@ -64,7 +64,7 @@ local songText = [[
 ЛП
 ]]
 
-local soundFile = "Interface\\AddOns\\MyAddon\\lp.mp3" -- Путь к вашему MP3 файлу
+local soundFile = "Interface\\AddOns\\SDHpampering\\lp.mp3" -- Путь к вашему MP3 файлу
 local currentSoundID -- Добавленная переменная для хранения идентификатора текущего звука
 
 local function PlaySoundFiles(file) -- бред какой-то написанный чатомГПТ, но работает
