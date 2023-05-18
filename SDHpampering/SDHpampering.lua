@@ -12,12 +12,12 @@ frame:SetPoint("CENTER") -- не знаю что это и зачем, но пу
 
 local startButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate") -- создаем кнопку старт
 startButton:SetSize(80, 25) -- размеры кнопки старт
-startButton:SetPoint("LEFT", 10, -400) -- позиция кнопки старт
+startButton:SetPoint("LEFT", 10, -200) -- позиция кнопки старт
 startButton:SetText("Старт") -- текст кнопки
 
 local stopButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate") -- создаем кнопку стоп
 stopButton:SetSize(80, 25) -- размеры кнопки стоп
-stopButton:SetPoint("RIGHT", -10, -400) -- позиция кнопки стоп
+stopButton:SetPoint("RIGHT", -10, -200) -- позиция кнопки стоп
 stopButton:SetText("Стоп") -- текст кнопки
 stopButton:Disable() -- кнопка стоп по умолчания выключена
 
@@ -210,7 +210,7 @@ local f_key = CreateFrame("Button", nil, UIParent, "UIPanelButtonTemplate") -- �
 local enabled_key = false -- Флаг, определяющий, включен ли поиск ключа
 
 f_key:SetSize(200, 30) -- размеры
-f_key:SetPoint("LEFT", 0, -520) -- позиция
+f_key:SetPoint("LEFT", 0, -180) -- позиция
 f_key:SetText(enabled_key and "Остановить поиск ключа" or "Начать поиск ключа") -- текст кнопки
 
 
@@ -514,7 +514,7 @@ frame:SetScript("OnEvent", OnChatMessage) -- подписываемся на е�
 local toggleButton = CreateFrame("Button", nil, UIParent, "UIPanelButtonTemplate") -- создаем кнопку
 
 toggleButton:SetSize(100, 25) -- размеры
-toggleButton:SetPoint("CENTER", 0, -350) -- позиция
+toggleButton:SetPoint("CENTER", 0, -150) -- позиция
 toggleButton:SetText(enabled and "Выключить" or "Включить") -- текст кнопки
 
 toggleButton:SetScript("OnClick", function(self) -- функция отключения события
