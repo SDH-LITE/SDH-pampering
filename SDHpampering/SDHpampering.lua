@@ -206,83 +206,32 @@ end)
 frame2:Hide()
 frame2.okayButton:Hide()
 
-local f_key = CreateFrame("Button", nil, UIParent, "UIPanelButtonTemplate") -- создаем кнопку
-local enabled_key = false -- Флаг, определяющий, включен ли поиск ключа
 
-f_key:SetSize(200, 30) -- размеры
-f_key:SetPoint("LEFT", 0, -180) -- позиция
-f_key:SetText(enabled_key and "Остановить поиск ключа" or "Начать поиск ключа") -- текст кнопки
+local playerGUID = UnitGUID("player")
+local MSG_CRITICAL_HIT = "Your %s critically hit %s for %d damage!"
 
 
-frame2.okayButton:SetScript("OnClick", function() -- тут уже открыто окно, выбираем галочки, нажали ок - выполняем код снизу
-    frame2.okayButton:Hide() -- закрываем кнопку ок
+local duelWins = 0
+local ff = CreateFrame("Frame")
 
-    enabled_key = not enabled_key
-    f_key:SetText(enabled_key and "Остановить поиск ключа" or "Начать поиск ключа") -- меняем текст
+ff:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 
-    for i = 1, numCheckboxes do -- получаем наши галочки
-        local checkbox = frame2.checkboxes[i]
-        local isChecked = checkbox:GetChecked()
-        local text = checkbox.text:GetText()
+ff:SetScript("OnEvent", function(self, event)
+    CombatLogSetCurrentEntry(-5, true); -- fifth newest entry, ignoring filters.
+	local timestamp, subEvent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags = CombatLogGetCurrentEntry();
 
-        if isChecked then
-            find_class = find_class .. " " .. text -- Добавление текста выбранного пункта к переменной
-        end
-    end
-
-    if find_class == '' then
-        frame2.timer:Cancel() -- останавливаем таймер
-        frame2.timer = nil
-    end
-
-    if enabled_key == true then
-        print("Поиск ключа начат")
-    else
-        print("Поиск ключа остановлен")
-        find_class = '' -- очищаем переменную
-    end
-
-    if enabled_key == true and find_class ~= '' then
-        local bagID = 0 -- Идентификатор сумки (0 для сумки персонажа)
-        local slot = 3 -- Номер слота
-
-        local itemLink = GetContainerItemLink(bagID, slot)
-
-        if itemLink then
-            local itemName, _, _, _, _, _, _, _, _, itemTexture = GetItemInfo(itemLink)
-
-            SendChatMessage (itemLink .. " " .. find_class, "CHANNEL", nil, 1)
-            frame2.timer = C_Timer.NewTicker(31, function() -- повтор действий каждые 31 сек, как на JS
-                if enabled_key == true then
-                    SendChatMessage (itemLink .. " " .. find_class, "CHANNEL", nil, 1)
-                else
-                    frame2.timer:Cancel()
+	-- Проверяем, является ли суб-событие убийством (UNIT_DIED или PARTY_KILL)
+        if subEvent == "UNIT_DIED" or subEvent == "PARTY_KILL" then
+           -- print("You won the duel against " .. destName)
+            -- Проверяем, что вы источник убийства
+            if sourceGUID == UnitGUID("player") then
+                -- Проверяем, что цель была игроком (в дуэли)
+                if bit.band(destFlags, COMBATLOG_OBJECT_TYPE_PLAYER) > 0 then
+                    duelWins = duelWins + 1
+                    SendChatMessage(destName .. ", сильно не плачь, что я тебя убил ((( ты, кстати, " .. duelWins .. "й за сегодня")
                 end
-            end)
-
-        else
-            print("Поместить ключ в 3-й слот сумки")
+            end
         end
-
-    else
-        print("Выбери классы, который нужно найти")
-    end
-
-
-    frame2:Hide() -- закрываем окошко поиска
-end)
-
-
-f_key:SetScript("OnClick", function(self)
-    if enabled_key == false then
-        frame2:Show()
-        frame2.okayButton:Show()
-    else -- если поиск идет, то останавливаем
-        enabled_key = false
-        f_key:SetText("Начать поиск ключа") -- меняем текст
-
-        find_class = ''
-    end
 end)
 
 
